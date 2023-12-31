@@ -584,18 +584,9 @@ def couple_employees(employees_list: list[dict]) -> list[tuple[str, str]] | None
     return couples
 
 
-def setup_secret_santa(employees_list: list[dict]) -> list[tuple[str, str]] | None:
-    """
-    Both preprocess and create couples from employees' list
-    :param employees_list: list of employees
-    :return: list of employees couples
-    """
-    employees_preprocessed = preprocess_employees(employees_list=employees_list)
-    return couple_employees(employees_preprocessed)
-
-
 def run():
-    return setup_secret_santa(employees_list=employees)
+    employees_preprocessed = preprocess_employees(employees_list=employees)
+    return couple_employees(employees_preprocessed)
 
 
 def run_parallel(chunks: int = None):
@@ -608,7 +599,7 @@ def run_parallel(chunks: int = None):
 
     flat_couples = []
     with Pool() as pool:
-        couples = pool.map(setup_secret_santa, chunks)
+        couples = pool.map(couple_employees, chunks)
         # Flatten couples' list of lists
         for sub_couple in couples:
             for couple in sub_couple:
