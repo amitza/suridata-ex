@@ -44,7 +44,7 @@ def test_duplicate_employee_removed_when_employees_contains_duplications() -> No
     assert dedup_employees == result_employees
 
 
-def test_couple_employee_when_employees_contains_2() -> None:
+def test_couple_employee_when_employees_contains_exactly_2() -> None:
     employees = [
         {
             "department": "R&D",
@@ -72,9 +72,8 @@ def test_couple_employee_when_employees_contains_less_then_2() -> None:
         }
     ]
 
-    expected_couples = None
     couples = couple_employees(employees)
-    assert couples == expected_couples
+    assert couples is None
 
 
 def test_couple_employee_when_employees_contains_odd_number() -> None:

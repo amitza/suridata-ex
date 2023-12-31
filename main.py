@@ -557,7 +557,7 @@ def preprocess_employees(employees_list: list[dict]) -> list[dict]:
     """
     Preprocess employees' list, removes duplications and shuffles
     :param employees_list: list of employees
-    :return: randomized ist of employees without duplications
+    :return: randomized list of employees without duplications
     """
     unique_employees_list = deduplicate_employees(employees_list)
     random.shuffle(unique_employees_list)
@@ -568,7 +568,7 @@ def couple_employees(employees_list: list[dict]) -> list[tuple[str, str]] | None
     """
     Create a list of employees couples
     :param employees_list: list of employees
-    :return: a list of employees couples
+    :return: list of employees couples
     """
 
     if len(employees_list) < 2:
@@ -585,6 +585,11 @@ def couple_employees(employees_list: list[dict]) -> list[tuple[str, str]] | None
 
 
 def setup_secret_santa(employees_list: list[dict]) -> list[tuple[str, str]] | None:
+    """
+    Both preprocess and create couples from employees' list
+    :param employees_list: list of employees
+    :return: list of employees couples
+    """
     employees_preprocessed = preprocess_employees(employees_list=employees_list)
     return couple_employees(employees_preprocessed)
 
@@ -613,6 +618,5 @@ def run_parallel(chunks: int = None):
 
 
 if __name__ == '__main__':
-    q = run()
-    q2 = run_parallel(5)
-    print(1)
+    print(run())
+    print(run_parallel(5))
