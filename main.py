@@ -584,6 +584,11 @@ def couple_employees(employees_list: list[dict]) -> list[tuple[str, str]] | None
     return couples
 
 
+def shuffle_and_couple_employees(employees_list: list[dict]) -> list[tuple[str, str]] | None:
+    random.shuffle(employees_list)
+    return couple_employees(employees_list)
+
+
 def run():
     employees_preprocessed = preprocess_employees(employees_list=employees)
     return couple_employees(employees_preprocessed)
@@ -594,12 +599,12 @@ def run_parallel(chunks: int = None):
         chunks = 5
 
     # Separate employees to chunks
-    employees_preprocessed = preprocess_employees(employees_list=employees)
+    employees_preprocessed = deduplicate_employees(employees_list=employees)
     chunks = [employees_preprocessed[i:i + chunks] for i in range(0, len(employees_preprocessed), chunks)]
 
     flat_couples = []
     with Pool() as pool:
-        couples = pool.map(couple_employees, chunks)
+        couples = pool.map(shuffle_and_couple_employees, chunks)
         # Flatten couples' list of lists
         for sub_couple in couples:
             for couple in sub_couple:
