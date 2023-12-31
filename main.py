@@ -1,3 +1,6 @@
+from multiprocessing import Pool
+import random
+
 employees = [
     {
         "department": "R&D",
@@ -536,42 +539,80 @@ employees = [
     }
 ]
 
-d = dict[tuple, tuple]
 
-
-def deduplicate(employees_list: list[dict]) -> list[dict]:
-    seen_set = set()
-    unique_list = []
-
+def deduplicate_employees(employees_list: list[dict]) -> list[dict]:
+    """
+    Remove duplications from employees' list
+    :param employees_list: list of employees
+    :return: list of employees without duplications
+    """
+    employees_list_processed: list[dict] = []
     for employee in employees_list:
-        employee_key = (employee["department"], employee["name"], employee["age"])
-        if employee_key not in seen_set:
-            seen_set.add(employee_key)
-            unique_list.append(employee)
-
-    return unique_list
+        if employee not in employees_list_processed:
+            employees_list_processed.append(employee)
+    return employees_list_processed
 
 
-def create_couples(employees_list: list[dict]) -> list[tuple[dict, dict]]:
-    print(employees_list)
+def preprocess_employees(employees_list: list[dict]) -> list[dict]:
+    """
+    Preprocess employees' list, removes duplications and shuffles
+    :param employees_list: list of employees
+    :return: randomized ist of employees without duplications
+    """
+    unique_employees_list = deduplicate_employees(employees_list)
+    random.shuffle(unique_employees_list)
+    return unique_employees_list
 
 
-# For each e in e_list
-# Check if giant (if key in d) - each e can be a giant only once
-# If not choose another random e from e_list (current e cannot be chosen)
-# Check if chosen employee is giant
-# If true check that current employee is not the drawf
-# If false add to d as { current_e: new_e }
+def couple_employees(employees_list: list[dict]) -> list[tuple[str, str]] | None:
+    """
+    Create a list of employees couples
+    :param employees_list: list of employees
+    :return: a list of employees couples
+    """
+
+    if len(employees_list) < 2:
+        print("employees_list must contain at least 2 employees")
+        return None
+    elif len(employees_list) == 2:
+        return [(employees_list[0]['name'], employees_list[1]['name'])]
+    couples: list[tuple[str, str]] = []
+
+    for i in range(0, len(employees_list) - 1):
+        couples.append((employees_list[i]['name'], employees_list[i + 1]['name']))
+    couples.append((employees_list[len(employees_list) - 1]['name'], employees_list[0]['name']))
+    return couples
 
 
-# Create a list of unique tuples
-# Get all combinations from e_list
-# Check for each combination (e1, e2) check that (e2, e1) doesn't exists
-# If true add to unique tuples
+def setup_secret_santa(employees_list: list[dict]) -> list[tuple[str, str]] | None:
+    employees_preprocessed = preprocess_employees(employees_list=employees_list)
+    return couple_employees(employees_preprocessed)
 
 
 def run():
-    print('hello world')
+    return setup_secret_santa(employees_list=employees)
 
 
-run()
+def run_parallel(chunks: int = None):
+    if chunks is None:
+        chunks = 5
+
+    # Separate employees to chunks
+    employees_deduped = deduplicate_employees(employees_list=employees)
+    chunks = [employees_deduped[i:i + chunks] for i in range(0, len(employees_deduped), chunks)]
+
+    flat_couples = []
+    with Pool() as pool:
+        couples = pool.map(setup_secret_santa, chunks)
+        # Flatten couples' list of lists
+        for sub_couple in couples:
+            for couple in sub_couple:
+                flat_couples.append(couple)
+
+    return flat_couples
+
+
+if __name__ == '__main__':
+    q = run()
+    q2 = run_parallel(5)
+    print(1)
