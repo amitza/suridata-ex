@@ -594,8 +594,8 @@ def run_parallel(chunks: int = None):
         chunks = 5
 
     # Separate employees to chunks
-    employees_deduped = deduplicate_employees(employees_list=employees)
-    chunks = [employees_deduped[i:i + chunks] for i in range(0, len(employees_deduped), chunks)]
+    employees_preprocessed = preprocess_employees(employees_list=employees)
+    chunks = [employees_preprocessed[i:i + chunks] for i in range(0, len(employees_preprocessed), chunks)]
 
     flat_couples = []
     with Pool() as pool:
@@ -610,4 +610,4 @@ def run_parallel(chunks: int = None):
 
 if __name__ == '__main__':
     print(run())
-    print(run_parallel())
+    print(run_parallel(6))
