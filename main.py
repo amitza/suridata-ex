@@ -610,4 +610,4 @@ def run_parallel(chunks: int = None):
 
 if __name__ == '__main__':
     print(run())
-    print(run_parallel(5))
+    print(run_parallel())
