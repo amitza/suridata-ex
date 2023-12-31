@@ -586,7 +586,7 @@ def couple_employees(employees_list: list[dict]) -> list[tuple[str, str]] | None
 
 def shuffle_and_couple_employees(employees_list: list[dict]) -> list[tuple[str, str]] | None:
     """
-    Shuffles list of employees couples and create couples
+    Shuffles list of employees and create couples
     :param employees_list: list of employees
     :return: list of employees couples
     """
